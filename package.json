@@ -8,6 +8,8 @@
   ],
   "main": "src/index.js",
   "dependencies": {
+    "@capacitor/cli": "3.6.0",
+    "@capacitor/core": "3.6.0",
     "@ionic/core": "6.1.11",
     "@ionic/react": "6.1.11",
     "@ionic/react-router": "6.1.11",

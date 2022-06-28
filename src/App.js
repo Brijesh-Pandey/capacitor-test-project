@@ -1,81 +1,72 @@
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonCard,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-  IonCardContent,
-  IonItem,
-  IonIcon,
-  IonLabel,
-  IonButton
-} from "@ionic/react";
-import { pin, wifi, wine, warning, walk } from "ionicons/icons";
+import React, { useState, useEffect, useRef } from "react";
 
 const App = () => {
+  let videoRef = useRef(null);
+
+  let photoRef = useRef(null);
+
+  const getVideo = () => {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true
+      })
+      .then((stream) => {
+        let video = videoRef.current;
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const takePicture = () => {
+    const width = 400;
+    const height = width / (16 / 9);
+
+    let video = videoRef.current;
+
+    let photo = photoRef.current;
+
+    photo.width = width;
+
+    photo.height = height;
+
+    let ctx = photo.getContext("2d");
+
+    ctx.drawImage(video, 0, 0, width, height);
+  };
+
+  const clearImage = () => {
+    let photo = photoRef.current;
+
+    let ctx = photo.getContext("2d");
+
+    ctx.clearRect(0, 0, photo.width, photo.height);
+  };
+
+  useEffect(() => {
+    getVideo();
+  }, [videoRef]);
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>CardExamples</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonCard>
-          <IonCardHeader>
-            <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-            <IonCardTitle>Card Title</IonCardTitle>
-          </IonCardHeader>
+    <div className="container">
+      <h1 className="text-center">Camera Selfie App in React</h1>
 
-          <IonCardContent>
-            Keep close to Nature's heart... and break clear away, once in
-            awhile, and climb a mountain or spend a week in the woods. Wash your
-            spirit clean.
-          </IonCardContent>
-        </IonCard>
+      <video ref={videoRef} className="container"></video>
 
-        <IonCard>
-          <IonItem>
-            <IonIcon icon={pin} slot="start" />
-            <IonLabel>ion-item in a card, icon left, button right</IonLabel>
-            <IonButton fill="outline" slot="end">
-              View
-            </IonButton>
-          </IonItem>
+      <button onClick={takePicture} className="btn btn-danger container">
+        Take Picture
+      </button>
 
-          <IonCardContent>
-            This is content, without any paragraph or header tags, within an
-            ion-cardContent element.
-          </IonCardContent>
-        </IonCard>
+      <canvas className="container" ref={photoRef}></canvas>
 
-        <IonCard>
-          <IonItem href="#" className="ion-activated">
-            <IonIcon icon={wifi} slot="start" />
-            <IonLabel>Card Link Item 1 activated</IonLabel>
-          </IonItem>
+      <button onClick={clearImage} className="btn btn-primary container">
+        Clear Image
+      </button>
 
-          <IonItem href="#">
-            <IonIcon icon={wine} slot="start" />
-            <IonLabel>Card Link Item 2</IonLabel>
-          </IonItem>
-
-          <IonItem className="ion-activated">
-            <IonIcon icon={warning} slot="start" />
-            <IonLabel>Card Button Item 1 activated</IonLabel>
-          </IonItem>
-
-          <IonItem>
-            <IonIcon icon={walk} slot="start" />
-            <IonLabel>Card Button Item 2</IonLabel>
-          </IonItem>
-        </IonCard>
-      </IonContent>
-    </IonPage>
+      <br />
+      <br />
+    </div>
   );
 };
 
